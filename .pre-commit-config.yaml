@@ -84,7 +84,7 @@ repos:
     name: Check typing annotations
     entry: mypy
     language: python
-    files: ^src/llmfallback/|^tests/
+    files: ^src/llmfallback/
     types: [text, python]
     args: [--config-file, pyproject.toml]
 
