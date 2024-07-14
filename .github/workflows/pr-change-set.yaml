@@ -1,0 +1,23 @@
+# This workflow checks and tests the package code, and it builds all package
+# artifacts whenever there were changes to a pull request.
+
+name: Check change set
+on:
+  pull_request:
+    branches:
+    - '*'
+    types:
+    - opened
+    - reopened
+    - synchronize
+    - ready_for_review
+permissions:
+  contents: read
+
+jobs:
+  build:
+    uses: ./.github/workflows/_build.yaml
+    permissions:
+      contents: read
+    with:
+      disable-pip-audit: ${{ vars.DISABLE_PIP_AUDIT == 'true' }}
