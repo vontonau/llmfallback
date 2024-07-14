@@ -50,7 +50,7 @@ repos:
   hooks:
   - id: pyupgrade
     name: Upgrade code idioms
-    files: ^src/package/|^tests/
+    files: ^src/llmfallback/|^tests/
     args: [--py310-plus]
 
 # Similar to pylint, with a few more/different checks. For more available
@@ -60,7 +60,7 @@ repos:
   hooks:
   - id: flake8
     name: Check flake8 issues
-    files: ^src/package/|^tests/
+    files: ^src/llmfallback/|^tests/
     types: [text, python]
     additional_dependencies: [flake8-bugbear==24.4.26, flake8-builtins==2.5.0, flake8-comprehensions==3.14.0, flake8-docstrings==1.7.0, flake8-logging==1.6.0, flake8-mutable==1.2.0, flake8-noqa==1.4.0, flake8-print==5.0.0, flake8-pyi==24.6.0, flake8-pytest-style==2.0.0, flake8-rst-docstrings==0.3.0, pep8-naming==0.14.1]
     args: [--config, .flake8]
@@ -73,7 +73,7 @@ repos:
     name: Check pylint issues
     entry: pylint
     language: python
-    files: ^src/package/|^tests/
+    files: ^src/llmfallback/|^tests/
     types: [text, python]
     args: [--rcfile, pyproject.toml]
 
@@ -84,7 +84,7 @@ repos:
     name: Check typing annotations
     entry: mypy
     language: python
-    files: ^src/package/|^tests/
+    files: ^src/llmfallback/|^tests/
     types: [text, python]
     args: [--config-file, pyproject.toml]
 
@@ -95,7 +95,7 @@ repos:
   - id: bandit
     name: Check for security issues
     args: [--configfile, pyproject.toml]
-    files: ^src/package/|^tests/
+    files: ^src/llmfallback/|^tests/
     types: [text, python]
     additional_dependencies: ['bandit[toml]']
 
@@ -164,7 +164,7 @@ repos:
   hooks:
   - id: pytest
     name: Run unit tests
-    entry: pytest -c pyproject.toml --cov-config pyproject.toml src/package/ tests/ docs/
+    entry: pytest -c pyproject.toml --cov-config pyproject.toml src/llmfallback/ tests/ docs/
     language: python
     verbose: true
     always_run: true
