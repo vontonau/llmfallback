@@ -4,7 +4,7 @@
    contain the root ``toctree`` directive.
 
 LLMFallback package
-===============
+===================
 
 .. toctree::
    :maxdepth: 4

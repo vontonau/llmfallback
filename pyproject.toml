@@ -56,6 +56,7 @@ dev = [
 docs = [
     "sphinx >=5.1.1,<8.0.0",
     "sphinx-markdown-builder >=0.6.4,<1.0.0",
+    "sphinx-autodoc-typehints >= 2.2.2,<3.0.0"
 ]
 hooks = [
     "pre-commit >=3.0.0,<3.8.0",
@@ -114,7 +115,6 @@ show_missing = true
 [tool.coverage.run]
 branch = true
 omit = [
-    "src/package/__main__.py",
 ]
 
 
@@ -257,7 +257,7 @@ addopts = """-vv -ra --tb native \
     --hypothesis-show-statistics --hypothesis-explain --hypothesis-verbosity verbose \
     --doctest-modules --doctest-continue-on-failure --doctest-glob '*.rst' --doctest-plus \
     --suppress-no-test-exit-code \
-    --cov package \
+    --cov llmfallback \
 """  # Consider adding --pdb
 # https://docs.python.org/3/library/doctest.html#option-flags
 doctest_optionflags = "IGNORE_EXCEPTION_DETAIL"
