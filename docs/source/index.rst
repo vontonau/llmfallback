@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root ``toctree`` directive.
 
-Package package
+LLMFallback package
 ===============
 
 .. toctree::
@@ -13,22 +13,8 @@ Package package
 .. autosummary::
    :toctree: generated
 
-Something
-=========
 
-The ``Something`` module contains a useful class which allows you to do something
-like the following:
-
-.. code: pycon
-
-    >>> from package import something
-    >>> s = something.Something()
-    >>> s.do_something()
-    True
-    >>> s.do_something(False)  # doctest: +SKIP
-    False  # This value would fail the test.
-
-.. automodule:: package
+.. automodule:: llmfallback
    :members:
 
 Indices and tables
