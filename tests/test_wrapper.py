@@ -5,32 +5,7 @@ from typing import Any
 import pytest
 
 from llmfallback import FailedRequestError, ModelConfig, ResilientLLM
-
-
-class MockClient:
-    """
-    A mock version of LLM client.
-
-    :param should_fail: If True, client will always raise an exception.
-    """
-
-    def __init__(self, should_fail: bool = False):
-        self.should_fail = should_fail
-
-    # pylint: disable-next = unused-argument
-    def create(self, model: str, prompt: str, **kwargs: dict[str, Any]) -> dict[str, Any]:
-        """
-        Create mocked prompt.
-
-        :param model: The name of the model to create prompt with
-        :param prompt: Prompt for the model
-        :param kwargs: additional arguments
-        :return: Dictionary containing result of LLM call
-        :raises Exception: If client is set to fail, exception will be raised.
-        """
-        if self.should_fail:
-            raise OSError("API call failure")
-        return {"response": f"Mock response for prompt: {prompt}"}
+from stubs import MockClient, AsyncMockClient
 
 
 def test_resilient_llm_completion():
@@ -86,4 +61,14 @@ def test_all_failed():
     llm = ResilientLLM([model1, model2])
 
     with pytest.raises(FailedRequestError):
+        llm.completion("Test prompt")
+
+
+def test_only_sync_clients():
+    """Test that async resilientllm only allows regular callable clients."""
+    client = AsyncMockClient()
+    model1 = ModelConfig("model1", client)
+    llm = ResilientLLM([model1])
+
+    with pytest.raises(TypeError):
         llm.completion("Test prompt")

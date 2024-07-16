@@ -32,9 +32,6 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
-[project.scripts]
-something = "package.__main__:main"
-
 [project.entry-points]
 
 [project.optional-dependencies]

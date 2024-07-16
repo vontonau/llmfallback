@@ -1,18 +1,8 @@
 """Test LLMFallback main functionality."""
 
 import pytest
-from typing import Any
 from llmfallback import FailedRequestError, ModelConfig, AsyncResilientLLM
-
-
-class AsyncMockClient:
-    def __init__(self, should_fail: bool = False):
-        self.should_fail = should_fail
-
-    async def create(self, model: str, prompt: str, **kwargs: dict[str, Any]) -> dict[str, Any]:
-        if self.should_fail:
-            raise Exception("Mock failure")
-        return {"response": f"Mock response for prompt: {prompt}"}
+from stubs import AsyncMockClient, MockClient
 
 @pytest.mark.asyncio
 async def test_async_resilient_llm_completion():
@@ -22,9 +12,9 @@ async def test_async_resilient_llm_completion():
     failing_client = AsyncMockClient(should_fail=True)
 
     # Create model configs
-    model1 = ModelConfig("model1", "openai", successful_client)
-    model2 = ModelConfig("model2", "gemini", failing_client)
-    model3 = ModelConfig("model3", "openai", successful_client)
+    model1 = ModelConfig("model1", successful_client)
+    model2 = ModelConfig("model2", failing_client)
+    model3 = ModelConfig("model3", successful_client)
 
     # Create AsyncResilientLLM instance
     llm = AsyncResilientLLM([model1, model2, model3])
@@ -49,8 +39,8 @@ async def test_async_switching():
     successful_client = AsyncMockClient()
     failing_client = AsyncMockClient(should_fail=True)
 
-    model1 = ModelConfig("model1", "openai", failing_client)
-    model2 = ModelConfig("model2", "openai", successful_client)
+    model1 = ModelConfig("model1", failing_client)
+    model2 = ModelConfig("model2", successful_client)
 
     llm = AsyncResilientLLM([model1, model2])
 
@@ -63,9 +53,20 @@ async def test_async_all_failed():
     """Test that checks that async_completion raises an error if all models fail."""
     failing_client = AsyncMockClient(should_fail=True)
 
-    model1 = ModelConfig("model1", "openai", failing_client)
-    model2 = ModelConfig("model2", "openai", failing_client)
+    model1 = ModelConfig("model1", failing_client)
+    model2 = ModelConfig("model2", failing_client)
     llm = AsyncResilientLLM([model1, model2])
 
     with pytest.raises(FailedRequestError):
+        await llm.async_completion("Test prompt")
+
+
+@pytest.mark.asyncio
+async def test_only_awaitable_clients():
+    """Test that async resilientllm only allows awaitable clients."""
+    client = MockClient()
+    model1 = ModelConfig("model1", client)
+    llm = AsyncResilientLLM([model1])
+
+    with pytest.raises(TypeError):
         await llm.async_completion("Test prompt")

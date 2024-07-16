@@ -108,13 +108,13 @@ class ResilientLLM(_ResilientLLM[SyncClientProtocol]):
         :return: The response from the language model.
         :rtype: dict[str, Any]
         :raises FailedRequestError: If all models have recently failed and no completion could be made.
-        :raises ValueError: If one of the models uses async API.
+        :raises TypeError: If one of the models uses async API.
         """
         for model in self.models:
             if not self._has_recently_failed(model.name):
                 client = model.client
-                if inspect.isawaitable(client.create):
-                    raise ValueError("Use async_completion method for calling async clients.")
+                if inspect.iscoroutinefunction(client.create):
+                    raise TypeError("Use async_completion method for calling async clients.")
 
                 try:
                     response = client.create(model=model.name, prompt=prompt, **kwargs)
@@ -145,16 +145,16 @@ class AsyncResilientLLM(_ResilientLLM[AsyncClientProtocol]):
         :return: The response from the language model.
         :rtype: dict[str, Any]
         :raises FailedRequestError: If all models have recently failed and no completion could be made.
-        raises ValueError: If one of the models uses sync API.
+        raises TypeError: If one of the models uses sync API.
         """
         for model in self.models:
             if not self._has_recently_failed(model.name):
                 client = model.client
-                if not inspect.isawaitable(client.create):
-                    raise ValueError("Use completion method for calling sync clients.")
+                if not inspect.iscoroutinefunction(client.create):
+                    raise TypeError("Use completion method for calling sync clients.")
 
                 try:
-                    response = client.create(model=model.name, prompt=prompt, **kwargs)
+                    response = await client.create(model=model.name, prompt=prompt, **kwargs)
                     return response
                 except Exception:
                     self._record_failure(model.name)
