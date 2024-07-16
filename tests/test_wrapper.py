@@ -40,9 +40,9 @@ def test_resilient_llm_completion():
     failing_client = MockClient(should_fail=True)
 
     # Create model configs
-    model1 = ModelConfig("model1", "openai", successful_client)
-    model2 = ModelConfig("model2", "gemini", failing_client)
-    model3 = ModelConfig("model3", "openai", successful_client)
+    model1 = ModelConfig("model1", successful_client)
+    model2 = ModelConfig("model2", failing_client)
+    model3 = ModelConfig("model3", successful_client)
 
     # Create ResilientLLM instance
     llm = ResilientLLM([model1, model2, model3])
@@ -52,12 +52,12 @@ def test_resilient_llm_completion():
     assert response == {"response": "Mock response for prompt: Test prompt"}
 
     # Test fallback to next model
-    model1.sync_client = failing_client
+    model1.client = failing_client
     response = llm.completion("Test prompt")
     assert response == {"response": "Mock response for prompt: Test prompt"}
 
     # Test all models failing
-    model3.sync_client = failing_client
+    model3.client = failing_client
     with pytest.raises(FailedRequestError):
         llm.completion("Test prompt")
 
@@ -67,8 +67,8 @@ def test_switching():
     successful_client = MockClient()
     failing_client = MockClient(should_fail=True)
 
-    model1 = ModelConfig("model1", "openai", failing_client)
-    model2 = ModelConfig("model2", "openai", successful_client)
+    model1 = ModelConfig("model1", failing_client)
+    model2 = ModelConfig("model2", successful_client)
 
     llm = ResilientLLM([model1, model2])
 
@@ -81,8 +81,8 @@ def test_all_failed():
     """Test that checks that create completion raises an error if all models fail."""
     failing_client = MockClient(should_fail=True)
 
-    model1 = ModelConfig("model1", "openai", failing_client)
-    model2 = ModelConfig("model2", "openai", failing_client)
+    model1 = ModelConfig("model1", failing_client)
+    model2 = ModelConfig("model2", failing_client)
     llm = ResilientLLM([model1, model2])
 
     with pytest.raises(FailedRequestError):

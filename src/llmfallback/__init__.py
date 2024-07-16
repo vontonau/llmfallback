@@ -6,6 +6,6 @@
 __version__ = "0.1"
 
 from .exceptions import FailedRequestError
-from .wrapper import ModelConfig, ResilientLLM, SyncClientProtocol
+from .wrapper import ModelConfig, ResilientLLM, SyncClientProtocol, AsyncClientProtocol, AsyncResilientLLM
 
-__all__ = ["FailedRequestError", "ModelConfig", "ResilientLLM", "SyncClientProtocol"]
+__all__ = ["FailedRequestError", "ModelConfig", "ResilientLLM", "AsyncResilientLLM", "AsyncClientProtocol", "SyncClientProtocol"]
